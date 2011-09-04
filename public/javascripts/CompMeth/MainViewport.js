@@ -13,14 +13,7 @@ CompMeth.MainViewport = Ext.extend(Ext.Viewport, {
     var config = {
       layout: 'border',
       items: [
-        new Ext.Panel({
-          region: 'center',
-          title: 'Computational methods',
-          border: false,
-          layout: 'fit',
-          items: [ centerTabPanel ]
-        }),
-        new CompMeth.MainFooter({ region: 'south' })
+        centerTabPanel
       ]
     };
 
