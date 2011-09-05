@@ -48,28 +48,37 @@ CompMeth.SLEPanel = Ext.extend(Ext.Panel, {
               cm: new Ext.grid.ColumnModel({
                 defaultSortable: false,
                 columns: function() {
+                  var commonColConf = {
+                    width: 60,
+                    menuDisabled: true,
+                    editor: {
+                      xtype: 'textfield',
+                      regex: /^(0|-?[1-9][0-9]*)((\/|.)[1-9][0-9]*)?$/,
+                      regexText: 'only integers ("9"), floats ("9.5") ' +
+                                 'or rationals ("5/9")'
+                    }
+                  }
                   var columns = new Array();
                   for(var i = 0; i < dim; i++) {
-                    columns.push({
-                      header: 'a*' + (i + 1),
-                      width: 60,
-                      dataIndex: i,
-                      editor: new Ext.form.NumberField(),
-                      menuDisabled: true
-                    });
+                    columns.push(
+                      Ext.apply({ header: 'a*' + (i + 1), dataIndex: i },
+                                commonColConf)
+                    );
                   }
-                  columns.push({
-                    header: 'b*',
-                    width: 60,
-                    dataIndex: 'free',
-                    editor: new Ext.form.NumberField(),
-                    menuDisabled: true
-                  });
+                  columns.push(
+                    Ext.apply({ header: 'b*', dataIndex: 'free' },
+                              commonColConf)
+                  );
                   return columns;
                 }()
               }),
               clicksToEdit: 1,
-              enableColumnMove: false
+              enableColumnMove: false,
+              listeners: {
+                afteredit: function(evt) {
+                  evt.record.commit();
+                }
+              }
             };
 
             new Ext.Window({
