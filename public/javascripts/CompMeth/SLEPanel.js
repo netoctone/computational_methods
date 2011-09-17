@@ -53,7 +53,7 @@ CompMeth.SLEPanel = Ext.extend(Ext.Panel, {
                     menuDisabled: true,
                     editor: {
                       xtype: 'textfield',
-                      regex: /^(0|-?[1-9][0-9]*)((\/|.)[1-9][0-9]*)?$/,
+                      regex: /^(0|-?[1-9][0-9]*)((\/[1-9]|\.)[0-9]*)?$/,
                       regexText: 'only integers ("9"), floats ("9.5") ' +
                                  'or rationals ("5/9")'
                     }

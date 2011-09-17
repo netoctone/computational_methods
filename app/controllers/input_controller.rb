@@ -14,7 +14,7 @@ class InputController < ApplicationController
           r = SLE::Gauss.solve SLE::System.new Matrix[*coeffs], Vector[*free]
           render :json => {
             :success => true,
-            :roots => r
+            :roots => r.map(&:to_s)
           }
         rescue => e
           render :json => {
