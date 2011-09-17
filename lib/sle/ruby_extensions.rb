@@ -17,3 +17,20 @@ class Matrix
   end
 
 end
+
+class String
+
+  def to_numeric
+    self =~ /^-?[0-9]*(\/[0-9]*[1-9][0-9]*|\.[0-9]*)?$/
+    raise StandardError, 'Not a valid numeric' unless $~
+
+    if self['/']
+      to_r
+    elsif self['.']
+      to_f
+    else
+      to_i
+    end
+  end
+
+end

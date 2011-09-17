@@ -8,8 +8,20 @@ module SLE
         raise ArgumentError, 'matrix size must equal vector size'
       end
 
-      @coeffs = coeff_matrix
-      @free = free_vector
+      string_with_rational = lambda do |s|
+        s.is_a? String and s.to_numeric.is_a? Rational
+      end
+
+      no_rationals = coeff_matrix.none? &string_with_rational
+      no_rationals &&= free_vector.none? &string_with_rational
+
+      if no_rationals
+        @coeffs = coeff_matrix.map &:to_f
+        @free = free_vector.map &:to_f
+      else
+        @coeffs = coeff_matrix.map &:to_r
+        @free = free_vector.map &:to_r
+      end
     end
 
     attr_reader :coeffs, :free
