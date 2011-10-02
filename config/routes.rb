@@ -1,6 +1,7 @@
 ComputationalMethods::Application.routes.draw do
   get "input/index"
   put "input/solve_sle"
+  post "input/approximate_func"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
