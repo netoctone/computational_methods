@@ -43,9 +43,9 @@ class InputController < ApplicationController
       format.json do
         begin
           dist, last_pt_ind = right - left, pts - 1
-          independent = Array.new(pts) { |i| left + i*dist/last_pt_ind }
-          dependent = independent.map { |x| eval func }
-          poly = ApproxWithPolynom.find_polynom independent, dependent, deg
+          indep = Array.new(pts) { |i| left + i*dist/last_pt_ind }
+          dependent = indep.map { |x| eval func }
+          poly = FuncApprox::LeastSquares.find_polynom indep, dependent, deg
 
           last_det_pt_ind = det_pts - 1
           indep_det = Array.new(det_pts) { |i| left+i*dist/last_det_pt_ind }

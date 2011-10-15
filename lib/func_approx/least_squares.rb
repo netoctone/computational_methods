@@ -1,7 +1,4 @@
-require 'matrix'
-require 'polynomial'
-
-module ApproxWithPolynom
+class FuncApprox::LeastSquares
 
   # independ_vals [Array of Numeric]
   # depend_vals [Array of Numeric]
@@ -13,7 +10,7 @@ module ApproxWithPolynom
     independ_matrix = Matrix.build(depend_vals.size, degree+1) do |row, col|
       independ_vals[row] ** col
     end
-    coeffs = LeastSquares.find_params independ_matrix, Vector[*depend_vals]
+    coeffs = ::LeastSquares.find_params independ_matrix, Vector[*depend_vals]
     Polynomial.new coeffs.to_a
   end
 
