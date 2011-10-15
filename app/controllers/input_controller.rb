@@ -171,4 +171,53 @@ class InputController < ApplicationController
     end
   end
 
+  def ordinary_differential_equations
+    input = params[:input]
+
+    deriv_u = [ input[:deriv_u1], input[:deriv_u2] ]
+    u_funcs = [ input[:u1], input[:u2] ]
+    u_left = [ input[:u1_left].to_f, input[:u2_left].to_f ]
+    left = input[:left].to_f
+    right = input[:right].to_f
+    step_num = input[:step_num].to_i
+
+    dist = right - left
+    step = dist / step_num
+
+    points = [left]
+    step_num.times {
+      points << points[-1] + step
+    }
+
+    u_vals = points.map do |pt|
+      x = pt
+      u_funcs.map do |func|
+        eval func
+      end
+    end
+
+    points = [left]
+    u_approx_vals = [u_left]
+    step_num.times {
+      x = points[-1]
+      u = u_approx_vals[-1]
+
+      points << x + step
+      u_approx_vals << deriv_u.zip(u).map do |deriv, u_cur|
+        u_cur + step*eval(deriv)
+      end
+    }
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :success => true,
+          :pts => points,
+          :u_approx_vals => u_approx_vals,
+          :u_vals => u_vals
+        }
+      end
+    end
+  end
+
 end
