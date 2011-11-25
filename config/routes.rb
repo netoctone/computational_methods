@@ -2,7 +2,8 @@ ComputationalMethods::Application.routes.draw do
   get "input/index"
   put "input/solve_sle"
   post "input/approximate_func", "input/derivat_integ",
-       "input/nonlinear_equations", "input/ordinary_differential_equations"
+       "input/nonlinear_equations", "input/ordinary_differential_equations",
+       "input/multiple_minimization"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
