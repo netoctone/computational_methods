@@ -270,13 +270,65 @@ class InputController < ApplicationController
     end
   end
 
-  private
-
   def fix_args_except func, args, except_ind
     x = args
     lambda do |arg|
       x[except_ind] = arg
       func[x]
+    end
+  end
+
+  private :fix_args_except
+
+  def conditional_multiple_minimization
+    input = params[:input]
+
+    func = input[:func]
+    precision = input[:precision].to_f
+
+    left = input[:left].to_f
+    right = input[:right].to_f
+    step = input[:step].to_f
+    fib_iter_num = input[:fib_iter_num].to_i
+
+    function = lambda { |x| eval func }
+
+    x = [input[:x0].to_f, input[:x1].to_f]
+
+    less_than_fine_coeff = input[:less_than_fine_coeff].to_f
+
+    less_than_fine = input[:less_than_fine]
+    less_than_fine_func = lambda { |x| eval less_than_fine }
+
+    fine = lambda do |x|
+      val = less_than_fine_func[x]
+      val < 0 ? 0 : less_than_fine_coeff*val**2
+    end
+
+    finder = FuncMinimum::MinimumFinder.new(FuncMinimum::Fibonacci,
+                                            fib_iter_num)
+    (0.1..1).step(0.1) do |weight|
+      fined_function = lambda { |x| function[x] + weight*fine[x] }
+      loop do
+        old_x = x.dup
+        x.size.times do |ind|
+          onearg_f = fix_args_except fined_function, x, ind
+          min = finder.find(onearg_f, left, right, step, x[ind]) || x[ind]
+          raise NoMinimum unless min
+          x[ind] = min
+        end
+        break if x.zip(old_x).all? { |cur, old| (cur-old).abs < precision }
+      end
+    end
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :success => true,
+          :point => x,
+          :value => function[x]
+        }
+      end
     end
   end
 
