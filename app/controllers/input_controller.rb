@@ -26,6 +26,47 @@ class InputController < ApplicationController
     end
   end
 
+  def eigen_values_and_vectors
+    input = params[:input]
+
+    left = input[:left].to_f
+    right = input[:right].to_f
+
+    SLE::Gauss
+    matrix = Matrix[*JSON.parse(input[:coeffs])].map &:to_f
+
+    dist, last_pt_ind = right - left, matrix.row_size
+    suggest_eigen = Array.new(matrix.row_size + 1) do |i|
+      left + i*dist/last_pt_ind
+    end
+
+    char_matrix = lambda { |e| matrix - Matrix.scalar(matrix.row_size, e) }
+    char_func = lambda { |e| char_matrix[e].det }
+
+    suggest_eigen_char = suggest_eigen.map do |e|
+      char_func[e]
+    end
+
+    char_poly = FuncApprox::Newton.find_polynom suggest_eigen, suggest_eigen_char
+
+    eigen_values = SimpleIteration.find_poly_roots char_poly, left, right
+    free = Vector.elements Array.new(matrix.row_size) { 0 }
+    eigen = eigen_values.inject({}) do |h, e|
+      roots = SLE::Gauss.solve SLE::System.new char_matrix[e], free
+      h[e] = roots.map &:to_s
+      h
+    end
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :success => true,
+          :eigen => eigen
+        }
+      end
+    end
+  end
+
   include Math
 
   # POST /input/approximate_func.json

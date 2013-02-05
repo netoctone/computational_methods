@@ -17,7 +17,7 @@ module SLE
         sys.size.times do |diag_ind|
           row_ind_with_max = (diag_ind...sys.size).inject do |mem, cur|
             if sys.coeffs[mem, diag_ind].abs < sys.coeffs[cur, diag_ind].abs
-              mem = cur_i
+              mem = cur
             end
             mem
           end
@@ -44,7 +44,11 @@ module SLE
             mem + sys.coeffs[diag_ind, i]*roots[i]
           end
           right = sys.free[diag_ind] - sum
-          roots[diag_ind] = right / sys.coeffs[diag_ind, diag_ind]
+          if right.abs < 0.1 and sys.coeffs[diag_ind, diag_ind].abs < 0.1
+            roots[diag_ind] = 1
+          else
+            roots[diag_ind] = right / sys.coeffs[diag_ind, diag_ind]
+          end
         end
         roots
       end

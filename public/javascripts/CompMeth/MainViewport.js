@@ -7,6 +7,7 @@ CompMeth.MainViewport = Ext.extend(Ext.Viewport, {
       activeItem: 0,
       items: [
         new CompMeth.SLEPanel(),
+        new CompMeth.EigenPanel(),
         new CompMeth.ApproxPanel(),
         new CompMeth.DerivatIntegPanel(),
         new CompMeth.NonlinearPanel(),

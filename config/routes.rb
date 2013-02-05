@@ -1,6 +1,6 @@
 ComputationalMethods::Application.routes.draw do
   get "input/index"
-  put "input/solve_sle"
+  put "input/solve_sle", "input/eigen_values_and_vectors"
   post "input/approximate_func", "input/derivat_integ",
        "input/nonlinear_equations", "input/ordinary_differential_equations",
        "input/multiple_minimization", "input/conditional_multiple_minimization"
